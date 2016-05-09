@@ -1,0 +1,161 @@
+# mapa1.world - basic world file example
+# Authors: Richard Vaughan
+# $Id$
+
+include "pioneer.inc"
+include "map.inc"
+include "sick.inc"
+
+# time to pause (in GUI mode) or quit (in headless mode (-g)) the simulation
+quit_time 3600 # 1 hour of simulated time
+
+paused 0
+
+resolution 0.02
+
+# configure the GUI window
+window
+(
+  size [ 750.000 375.000 ] # in pixels
+  scale 22   # pixels per meter
+  center [ 0.0  0.0 ]
+  rotate [ 0  0 ]
+  			
+  show_data 1              # 1=on 0=off
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "corredor"
+  size [30.000 15.00 0.800]
+  pose [0 0 0 0]
+  bitmap "mapa_proj.bmp"
+)
+
+
+pioneer2dx
+(		  
+  name "r0"
+  pose [ 13 1 0 180 ] 
+
+  sicklaser()
+ 
+  localization "gps"
+  localization_origin [ 13 0 0 180 ]
+  blobfinder ()
+
+  gripper (
+	pose [ 0.25 0.0 0.0 0.0 ]
+	size [0.2 0.3 0.0]
+	color "grey"
+	)
+)
+
+pioneer2dx
+(		  
+  name "r1"
+  pose [ 13 0 0 180 ] 
+
+  sicklaser()
+ 
+  localization "gps"
+  localization_origin [ 13 0 0 180 ]
+  blobfinder ()
+
+  gripper (
+	pose [ 0.25 0.0 0.0 0.0 ]
+	size [0.2 0.3 0.0]
+	color "grey"
+	)
+)
+
+pioneer2dx
+(		  
+  name "r2"
+  pose [ 13 -1 0 180 ] 
+
+  sicklaser()
+ 
+ localization "gps"
+  localization_origin [ 13 0 0 180 ]
+   blobfinder ()
+
+)
+
+pioneer2dx
+(		  
+  name "r3"
+  pose [ -13 -1 0 0 ] 
+
+  sicklaser()
+ 
+ localization "gps"
+  localization_origin [ -13 0 0 0 ]
+   blobfinder ()
+
+  color "blue"
+
+  gripper (
+	pose [ 0.25 0.0 0.0 0.0 ]
+	size [0.2 0.3 0.0]
+	color "grey"
+	)
+)
+
+
+pioneer2dx
+(		  
+  name "r4"
+  pose [ -13 0 0 0 ] 
+
+  sicklaser()
+ 
+ localization "gps"
+  localization_origin [ -13 0 0 0 ]
+   blobfinder ()
+
+  color "blue"
+
+  gripper (
+	pose [ 0.25 0.0 0.0 0.0 ]
+	size [0.2 0.3 0.0]
+	color "grey"
+	)
+)
+
+pioneer2dx
+(		  
+  name "r5"
+  pose [ -13 1 0 0 ] 
+
+  sicklaser()
+ 
+ localization "gps"
+  localization_origin [ -13 0 0 0 ]
+   blobfinder ()
+
+  color "blue"
+
+)
+
+
+define puck model(
+  size [ 0.080 0.080 0.300 ]
+  gripper_return 1
+  gui_move 1
+  gui_nose 0
+  ranger_return 0
+  fiducial_return 10
+  mass 0.0
+)
+
+puck( pose [-4 1 0 0 ] color "green" )
+puck( pose [-3 1 0 0 ] color "green" )
+puck( pose [-2 1 0 0 ] color "green" )
+puck( pose [-1 1 0 0 ] color "green" )
+puck( pose [1 -1 0 0 ] color "green" )
+puck( pose [2 -1 0 0 ] color "green" )
+puck( pose [3 -1 0 0 ] color "green" )
+puck( pose [4 -1 0 0 ] color "green" )
+

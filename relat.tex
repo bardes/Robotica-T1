@@ -1,0 +1,76 @@
+\documentclass[11pt,oneside]{article}
+\usepackage[brazilian]{babel}			% Ajusta a língua para Portugês Brasileiro
+\usepackage{amsmath}					% Permite escrever fórmulas matemáticas
+\usepackage[utf8]{inputenc}			% Lê o arquivo fonte codificado em UTF-8
+\usepackage[T1]{fontenc}				% Codifica os tipos no arquivo de saída usando T1
+\usepackage[a4paper]{geometry}			% Ajusta o tamanho do papel para A4
+\usepackage{titling}					% Permite fazer ajustes no título do artigo
+\usepackage{fancyhdr}					% Permite ajustar cabeçalhos e rodapés
+\usepackage{indentfirst}				% Ajusta a indentação do primeiro parágrafo
+
+%% Título do artigo %%
+\title{
+\vspace{-3cm}	% Reduz a quantidade de espaço em branco antes do título
+SSC--0712 Programação de Robôs Móveis \\
+Relatório -- 1
+}
+
+%% Autores do artigo %%
+\author {
+Paulo Bardes (8531932)
+}
+
+%% Data %%
+\date {\today}
+
+%% Inicio do arqigo %%
+\begin{document}
+
+% Insere o título %
+\maketitle
+\vspace{-6mm}
+\hrule
+
+\section{Descrição}
+Este relatório descreve a estratégia e implementação dos algorítimos de controle de um time composto por 3 robôs autônomos. O objetivo é coletar metade mais um dos itens verdes presentes no mapa e taze-los para a região inicial do mapa.
+
+Como apenas 2 dos robôs são capazes de carregar itens, diferentes estratégias são necessárias para controlar cada um dos deles. Em particular, tomando vantagem do fato de que o robô que não carrega itens é mais rápido do que os outros, o que permite um mapeamento mais ágil.
+
+\section{Implementação}
+
+A lógica de controle dos robôs foi implementada em C++, com biblioteca \emph{libplayerc++}, e simulado no programa \emph{Stage}. O código pode ser encontrado no seguinte repositório: \texttt{xxx}.
+
+A implementação da lógica de controle foi feita através de uma máquina de estados. A diferença entre os robôs com e sem garra é que o robô sem garra não passa pelo estado \ref{garra}.
+
+\subsection{Prevenção de Colisão}
+O algorítimo de prevenção de colisão é uma combinação entre a tática de campos potenciais e de desvio do ponto mais próximo. Para evitar discrepâncias nos dados o feixe de laser alinhado com o centro do robô é ignorado durante o cálculo dos campos potencias.
+
+Como uma heurística para evitar colisões o robô monitora (através do laser) o ponto mais próximo e dependendo da distância para os motores para evitar contato e permitir mais tempo para as manobras de evasão.
+
+\subsection{Navegação Ponto a Ponto}
+Para navegar de um ponto ao outro o robô calcula a diferença angular entre seu ângulo atual e o angulo entre o ponto atual e o ponto de destino. Em seguida o ângulo é normalizado para o intervalo $[-\pi, \pi]$ usando-se o seguinte método: \texttt{atan2(sin(diff), cos(diff))}. Essa técnica se aproveita do fato de que as funções trigonométricas da \emph{libc} garantidamente retornam um resultado no intervalo correto.
+
+\subsection{Mapeamento}
+Para localizar os itens cada robô possuí um conjunto ordenado de pontos, definindo uma rota que deve ser percorrida. Toda a navegação é feita usando-se o algoritmo de navegação ponto a ponto, em conjunto com a prevenção de colisão, que toma prioridade em caso de conflitos.
+
+Ao percorrer da rota quaisquer itens avistados são adicionados à uma fila comum a todos os robôs, junto com informações sobre sua localização e se este item já está delegado a algum robô. 
+
+\subsection{Coleção de Itens}
+\label{garra}
+\subsubsection{Navegação Até o Item}
+Todos os robôs com garras monitoram a lista em busca do item mais próximo de si. Se a lista estiver vazia todos os robôs entram em modo de mapeamento. Para navegar até o item desejado o robô primeiro navega através da rota predefinida até o ponto mais próximo do item e somente no final navega diretamente para o item.
+
+\subsubsection{Obtenção}
+Para a obtenção do item o robô usa a câmera (\emph{blobfinder}) como referência de alinhamento e aproxima-se lentamente até a distância correta do item.
+
+\subsubsection{Navegação Até a Área Inicial}
+Uma vez que o item é obtido ele deve ser trazido de volta para a área inicial do time para finalmente ser descartado. para isso o robô primeiro navega em direção ao ponto mais próximo de sua rota e em seguida segue sobre a rota até chegar na região inicial. 
+
+\section{Resultados}
+Os algorítimos de navegação de ponto a ponto e prevenção de colisão se mostraram surpreendentemente eficientes. Foram necessárias algumas iterações de testes e ajuste de parâmetros, porém ao final os resultados foram positivos até mesmo em situações desfavoráveis como obstáculos côncavos.
+
+O algorítimo de localização e mapeamento de itens infelizmente se mostrou muito impreciso, provavelmente ajustes finos nos parâmetros do sensor \emph{blobfinder} poderiam contribuir para resultados mais confiáveis, porém devido a natureza do sensor é difícil garantir esses resultados, essencialmente fora das simulações.
+
+Por fim a obtenção de itens não pode ser completamente implementada, apesar dos componentes básicos do algoritmo já estarem prontos (navegação ponto a ponto e rotas), devido a falta de tempo e imprecisões do mapeamento.
+
+\end{document}
